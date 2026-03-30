@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Meu Portfólio Node.js</title>
+    <style>
+        body { font-family: sans-serif; max-width: 500px; margin: 50px auto; background: #f4f4f9; }
+        .card { background: white; padding: 20px; border-radius: 8px; shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        ul { list-token: none; padding: 0; }
+        li { background: #eee; margin: 5px 0; padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Produtos do Banco 🚀</h1>
+        <ul id="lista-produtos">
+            <li>Carregando produtos...</li>
+        </ul>
+    </div>
+
+    <script>
+        // Função que busca dados do seu Back-end Node.js
+        async function buscarProdutos() {
+            try {
+                const resposta = await fetch('http://localhost:3000/produtos');
+                const produtos = await resposta.json();
+                
+                const lista = document.getElementById('lista-produtos');
+                lista.innerHTML = ''; // Limpa a mensagem de carregando
+
+                if (produtos.length === 0) {
+                    lista.innerHTML = '<li>Nenhum produto cadastrado.</li>';
+                    return;
+                }
+
+                produtos.forEach(p => {
+                    const item = document.createElement('li');
+                    item.innerHTML = `<span>${p.nome}</span> <strong>R$ ${p.preco.toFixed(2)}</strong>`;
+                    lista.appendChild(item);
+                });
+            } catch (erro) {
+                console.error("Erro ao conectar na API:", erro);
+                document.getElementById('lista-produtos').innerHTML = '<li>Erro ao carregar API. Verifique se o Node está rodando!</li>';
+            }
+        }
+
+        // Chama a função assim que a página abre
+        buscarProdutos();
+    </script>
+</body>
+</html>
